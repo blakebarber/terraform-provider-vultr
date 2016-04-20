@@ -209,7 +209,7 @@ func resourceVultrServerRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("power_status", server.PowerStatus)
 	d.Set("default_password", server.DefaultPassword)
 	d.Set("ipv4_address", server.MainIP)
-	d.Set("ipv6_address", server.MainIPV6)
+	d.Set("ipv6_address", server.V6Networks[0].MainIP)
 	d.Set("ipv4_private_address", server.InternalIP)
 
 	d.SetConnInfo(map[string]string{
@@ -268,7 +268,7 @@ func WaitForServerAttribute(d *schema.ResourceData, target string, pending []str
 
 	stateConf := &resource.StateChangeConf{
 		Pending:    pending,
-		Target:     target,
+		Target:     []string{"target"},
 		Refresh:    newServerStateRefreshFunc(d, attribute, meta),
 		Timeout:    60 * time.Minute,
 		Delay:      10 * time.Second,
